@@ -35,5 +35,5 @@ $DOWNLOAD $url
 
 echo "* Extracting $filename"
 rm -rf bin && mkdir bin && tar xzvf $filename -C bin >/dev/null && rm -f $filename
-echo "* helm-take-ownership installed!\n"
+echo "* helm-take-ownership installed!"
 bin/helm-take-ownership --help

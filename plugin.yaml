@@ -1,14 +1,10 @@
 name: own
 version: 0.1.0
 usage: Transfer ownership of a kubernetes release to helm
-description: |-
-  Transfer ownership of a kubernetes release to helm.
-  usage:
-    $ helm own --deploy my-deployment --svc my-service my-release
-    $ helm own --help
+description: Transfer ownership of a kubernetes release to helm.
 ignoreFlags: false
 useTunnel: false
 command: "$HELM_PLUGIN_DIR/bin/helm-take-ownership"
 hooks:
-  install: "cd $HELM_PLUGIN_DIR/helm-take-ownership; ./install.sh"
-  update: "cd $HELM_PLUGIN_DIR/helm-take-ownership; ./install.sh"
+  install: "cd $HELM_PLUGIN_DIR; ./install.sh"
+  update: "cd $HELM_PLUGIN_DIR; ./install.sh"

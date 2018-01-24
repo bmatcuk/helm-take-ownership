@@ -1,4 +1,4 @@
-# helm-take-ownership
+# [helm-take-ownership]
 Transfer ownership of existing [kubernetes] release to [helm].
 
 Let's say you have an existing [kubernetes] deployment that you want to migrate
@@ -30,8 +30,6 @@ along.
 ```bash
 helm plugin install git@github.com:bmatcuk/helm-take-ownership.git
 ```
-
-You'll need to have [go] and [glide] installed.
 
 ## Usage
 [helm-take-ownership]'s operation is fairly simple. You tell it what resources
@@ -79,6 +77,26 @@ will do that you might not want:
 I think, in the future, it might make sense to have some sort of "edit" option
 that would allow a user to edit the Chart before it is installed to take care
 of these very specific use cases.
+
+## Development
+[helm-take-ownership] is written in [go] and uses [glide] to manage
+dependencies.
+
+```bash
+# Grab latest code and install dependencies:
+git clone git@github.com:bmatcuk/helm-take-ownership.git
+cd helm-take-ownership
+make dependencies
+
+# Install plugin locally
+# helm plugin remove own
+helm plugin install $(pwd)
+
+# Build locally
+make
+```
+
+If you'd like to contribute to [helm-take-ownership], submit a pull request.
 
 ## TODO
 - [ ] command line switch to switch between [helm] configmaps and secrets
