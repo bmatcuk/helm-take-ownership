@@ -1,0 +1,28 @@
+package: github.com/bmatcuk/helm-take-ownership
+import:
+- package: github.com/ghodss/yaml
+  version: ~1.0.0
+- package: github.com/spf13/cobra
+  version: 0.0.1
+- package: k8s.io/apimachinery
+  version: kubernetes-1.8.0
+  subpackages:
+  - pkg/apis/meta/v1
+- package: k8s.io/helm
+  version: 2.7.2
+  subpackages:
+  - pkg/proto/hapi/chart
+  - pkg/proto/hapi/release
+  - pkg/storage
+  - pkg/storage/driver
+  - pkg/tiller/environment
+  - pkg/timeconv
+- package: k8s.io/kubernetes
+  version: 1.8.0
+  subpackages:
+  - pkg/client/clientset_generated/internalclientset
+  - pkg/kubectl/cmd/util
+- package: k8s.io/api
+  version: kubernetes-1.8.0
+- package: k8s.io/client-go
+  version: kubernetes-1.8.0
