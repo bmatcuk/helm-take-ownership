@@ -30,24 +30,28 @@ func (k *Kube) buildTemplates() ([]*chart.Template, string) {
 		manifest += addChartTemplate(templates, "configmap", name, k.ConfigMaps[i], idx)
 		idx++
 	}
+	for i, name := range k.DaemonSetNames {
+		manifest += addChartTemplate(templates, "daemonset", name, k.DaemonSets[i], idx)
+		idx++
+	}
 	for i, name := range k.DeploymentNames {
 		manifest += addChartTemplate(templates, "deployment", name, k.Deployments[i], idx)
 		idx++
 	}
-	for i, name := range k.DaemonSetNames {
-		manifest += addChartTemplate(templates, "daemon", name, k.DaemonSets[i], idx)
+	for i, name := range k.HorizontalPodAutoscalerNames {
+		manifest += addChartTemplate(templates, "hpa", name, k.HorizontalPodAutoscalers[i], idx)
 		idx++
 	}
 	for i, name := range k.JobNames {
 		manifest += addChartTemplate(templates, "job", name, k.Jobs[i], idx)
 		idx++
 	}
-	for i, name := range k.PersistentVolumeNames {
-		manifest += addChartTemplate(templates, "pv", name, k.PersistentVolumes[i], idx)
-		idx++
-	}
 	for i, name := range k.PersistentVolumeClaimNames {
 		manifest += addChartTemplate(templates, "pvc", name, k.PersistentVolumeClaims[i], idx)
+		idx++
+	}
+	for i, name := range k.PersistentVolumeNames {
+		manifest += addChartTemplate(templates, "pv", name, k.PersistentVolumes[i], idx)
 		idx++
 	}
 	for i, name := range k.PodNames {
@@ -55,11 +59,11 @@ func (k *Kube) buildTemplates() ([]*chart.Template, string) {
 		idx++
 	}
 	for i, name := range k.ReplicaSetNames {
-		manifest += addChartTemplate(templates, "rs", name, k.ReplicaSets[i], idx)
+		manifest += addChartTemplate(templates, "replicaset", name, k.ReplicaSets[i], idx)
 		idx++
 	}
 	for i, name := range k.ReplicationControllerNames {
-		manifest += addChartTemplate(templates, "rc", name, k.ReplicationControllers[i], idx)
+		manifest += addChartTemplate(templates, "replicationcontroller", name, k.ReplicationControllers[i], idx)
 		idx++
 	}
 	for i, name := range k.SecretNames {
@@ -75,7 +79,7 @@ func (k *Kube) buildTemplates() ([]*chart.Template, string) {
 		idx++
 	}
 	for i, name := range k.StorageClassNames {
-		manifest += addChartTemplate(templates, "sc", name, k.StorageClasses[i], idx)
+		manifest += addChartTemplate(templates, "storageclass", name, k.StorageClasses[i], idx)
 		idx++
 	}
 	return templates, manifest

@@ -1,5 +1,5 @@
 name: own
-version: 0.1.0
+version: 0.2.0
 usage: Transfer ownership of a kubernetes release to helm
 description: Transfer ownership of a kubernetes release to helm.
 ignoreFlags: false

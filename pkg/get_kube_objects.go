@@ -27,13 +27,16 @@ func (k *Kube) GetKubeObjects(client *kubernetes.Clientset) error {
 	if err := k.getDaemonSets(client); err != nil {
 		return err
 	}
+	if err := k.getHorizontalPodAutoscalers(client); err != nil {
+		return err
+	}
 	if err := k.getJobs(client); err != nil {
 		return err
 	}
-	if err := k.getPersistentVolumes(client); err != nil {
+	if err := k.getPersistentVolumeClaims(client); err != nil {
 		return err
 	}
-	if err := k.getPersistentVolumeClaims(client); err != nil {
+	if err := k.getPersistentVolumes(client); err != nil {
 		return err
 	}
 	if err := k.getPods(client); err != nil {
@@ -146,6 +149,34 @@ func (k *Kube) getDaemonSets(client *kubernetes.Clientset) error {
 	return nil
 }
 
+func (k *Kube) getHorizontalPodAutoscalers(client *kubernetes.Clientset) error {
+	for _, name := range k.HorizontalPodAutoscalerNames {
+		hpa, err := client.AutoscalingV1().HorizontalPodAutoscalers(k.Namespace).Get(name, metav1.GetOptions{})
+		if err != nil {
+			return err
+		}
+		ref, err := apiref.GetReference(api.Scheme, hpa)
+		if err != nil {
+			return err
+		}
+		if hpa.Kind == "" {
+			hpa.Kind = ref.Kind
+		}
+		if hpa.APIVersion == "" {
+			hpa.APIVersion = makeAPIVersion(hpa.GetSelfLink())
+		}
+		cleanupMeta(&hpa.ObjectMeta)
+		cleanupDecorators(hpa.ObjectMeta.Annotations)
+		yml, err := cleanupAndMarshalToYaml(hpa)
+		if err != nil {
+			return err
+		}
+		k.HorizontalPodAutoscalers = append(k.HorizontalPodAutoscalers, yml)
+	}
+	k.NumTemplates += len(k.HorizontalPodAutoscalers)
+	return nil
+}
+
 func (k *Kube) getJobs(client *kubernetes.Clientset) error {
 	for _, name := range k.JobNames {
 		job, err := client.BatchV1().Jobs(k.Namespace).Get(name, metav1.GetOptions{})
@@ -177,33 +208,6 @@ func (k *Kube) getJobs(client *kubernetes.Clientset) error {
 	return nil
 }
 
-func (k *Kube) getPersistentVolumes(client *kubernetes.Clientset) error {
-	for _, name := range k.PersistentVolumeNames {
-		pv, err := client.CoreV1().PersistentVolumes().Get(name, metav1.GetOptions{})
-		if err != nil {
-			return err
-		}
-		ref, err := apiref.GetReference(api.Scheme, pv)
-		if err != nil {
-			return err
-		}
-		if pv.Kind == "" {
-			pv.Kind = ref.Kind
-		}
-		if pv.APIVersion == "" {
-			pv.APIVersion = ref.APIVersion
-		}
-		cleanupMeta(&pv.ObjectMeta)
-		yml, err := cleanupAndMarshalToYaml(pv)
-		if err != nil {
-			return err
-		}
-		k.PersistentVolumes = append(k.PersistentVolumes, yml)
-	}
-	k.NumTemplates += len(k.PersistentVolumes)
-	return nil
-}
-
 func (k *Kube) getPersistentVolumeClaims(client *kubernetes.Clientset) error {
 	for _, name := range k.PersistentVolumeClaimNames {
 		pvc, err := client.CoreV1().PersistentVolumeClaims(k.Namespace).Get(name, metav1.GetOptions{})
@@ -229,6 +233,33 @@ func (k *Kube) getPersistentVolumeClaims(client *kubernetes.Clientset) error {
 		k.PersistentVolumeClaims = append(k.PersistentVolumeClaims, yml)
 	}
 	k.NumTemplates += len(k.PersistentVolumeClaims)
+	return nil
+}
+
+func (k *Kube) getPersistentVolumes(client *kubernetes.Clientset) error {
+	for _, name := range k.PersistentVolumeNames {
+		pv, err := client.CoreV1().PersistentVolumes().Get(name, metav1.GetOptions{})
+		if err != nil {
+			return err
+		}
+		ref, err := apiref.GetReference(api.Scheme, pv)
+		if err != nil {
+			return err
+		}
+		if pv.Kind == "" {
+			pv.Kind = ref.Kind
+		}
+		if pv.APIVersion == "" {
+			pv.APIVersion = ref.APIVersion
+		}
+		cleanupMeta(&pv.ObjectMeta)
+		yml, err := cleanupAndMarshalToYaml(pv)
+		if err != nil {
+			return err
+		}
+		k.PersistentVolumes = append(k.PersistentVolumes, yml)
+	}
+	k.NumTemplates += len(k.PersistentVolumes)
 	return nil
 }
 
@@ -467,10 +498,14 @@ func cleanupPodSpec(p *corev1.PodSpec) {
 }
 
 func cleanupDecorators(m map[string]string) {
+	delete(m, "autoscaling.alpha.kubernetes.io/conditions")
+	delete(m, "autoscaling.alpha.kubernetes.io/current-metrics")
 	delete(m, "controller-uid")
 	delete(m, "deployment.kubernetes.io/desired-replicas")
 	delete(m, "deployment.kubernetes.io/max-replicas")
 	delete(m, "deployment.kubernetes.io/revision")
+	delete(m, "kubectl.kubernetes.io/last-applied-configuration")
+	delete(m, "kubernetes.io/change-cause")
 	delete(m, "pod-template-hash")
 	delete(m, "pv.kubernetes.io/bind-completed")
 	delete(m, "pv.kubernetes.io/bound-by-controller")
