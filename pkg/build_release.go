@@ -42,6 +42,10 @@ func (k *Kube) buildTemplates() ([]*chart.Template, string) {
 		manifest += addChartTemplate(templates, "hpa", name, k.HorizontalPodAutoscalers[i], idx)
 		idx++
 	}
+	for i, name := range k.IngressNames {
+		manifest += addChartTemplate(templates, "ingress", name, k.Ingresses[i], idx)
+		idx++
+	}
 	for i, name := range k.JobNames {
 		manifest += addChartTemplate(templates, "job", name, k.Jobs[i], idx)
 		idx++

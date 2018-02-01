@@ -144,6 +144,7 @@ func main() {
 	flags.StringSliceVar(&kube.DaemonSetNames, "daemonsets", kube.DaemonSetNames, "(aka 'ds') Comma-separated names of DaemonSets to include")
 	flags.StringSliceVar(&kube.DeploymentNames, "deployments", kube.DeploymentNames, "(aka 'deploy') Comma-separated names of Deployments to include")
 	flags.StringSliceVar(&kube.HorizontalPodAutoscalerNames, "horizontalpodautoscalers", kube.HorizontalPodAutoscalers, "(aka 'hpa') Comma-separated names of Horizontal Pod Autoscalers to include")
+	flags.StringSliceVar(&kube.IngressNames, "ingresses", kube.IngressNames, "(aka 'ing') Comma-separated names of Ingresses to include")
 	flags.StringSliceVar(&kube.JobNames, "jobs", kube.JobNames, "Comma-separated names of Jobs to include")
 	flags.StringSliceVar(&kube.PersistentVolumeClaimNames, "persistentvolumeclaims", kube.PersistentVolumeClaimNames, "(aka 'pvc') Comma-separated names of PersistentVolumeClaims to include")
 	flags.StringSliceVar(&kube.PersistentVolumeNames, "persistentvolumes", kube.PersistentVolumeNames, "(aka 'pv') Comma-separated names of PersistentVolumes to include")
@@ -181,6 +182,8 @@ func main() {
 			name = "deployments"
 		case "hpa":
 			name = "horizontalpodautoscalers"
+		case "ing":
+			name = "ingresses"
 		case "pvc":
 			name = "persistentvolumeclaims"
 		case "pv":

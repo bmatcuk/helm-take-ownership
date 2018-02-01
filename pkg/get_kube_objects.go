@@ -30,6 +30,9 @@ func (k *Kube) GetKubeObjects(client *kubernetes.Clientset) error {
 	if err := k.getHorizontalPodAutoscalers(client); err != nil {
 		return err
 	}
+	if err := k.getIngresses(client); err != nil {
+		return err
+	}
 	if err := k.getJobs(client); err != nil {
 		return err
 	}
@@ -174,6 +177,33 @@ func (k *Kube) getHorizontalPodAutoscalers(client *kubernetes.Clientset) error {
 		k.HorizontalPodAutoscalers = append(k.HorizontalPodAutoscalers, yml)
 	}
 	k.NumTemplates += len(k.HorizontalPodAutoscalers)
+	return nil
+}
+
+func (k *Kube) getIngresses(client *kubernetes.Clientset) error {
+	for _, name := range k.IngressNames {
+		ingress, err := client.ExtensionsV1beta1().Ingresses(k.Namespace).Get(name, metav1.GetOptions{})
+		if err != nil {
+			return err
+		}
+		ref, err := apiref.GetReference(api.Scheme, ingress)
+		if err != nil {
+			return err
+		}
+		if ingress.Kind == "" {
+			ingress.Kind = ref.Kind
+		}
+		if ingress.APIVersion == "" {
+			ingress.APIVersion = makeAPIVersion(ingress.GetSelfLink())
+		}
+		cleanupMeta(&ingress.ObjectMeta)
+		yml, err := cleanupAndMarshalToYaml(ingress)
+		if err != nil {
+			return err
+		}
+		k.Ingresses = append(k.Ingresses, yml)
+	}
+	k.NumTemplates += len(k.Ingresses)
 	return nil
 }
 

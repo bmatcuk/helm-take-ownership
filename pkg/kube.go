@@ -5,6 +5,7 @@ type Kube struct {
 	DaemonSetNames               []string
 	DeploymentNames              []string
 	HorizontalPodAutoscalerNames []string
+	IngressNames                 []string
 	JobNames                     []string
 	PersistentVolumeClaimNames   []string
 	PersistentVolumeNames        []string
@@ -21,6 +22,7 @@ type Kube struct {
 	DaemonSets               []string
 	Deployments              []string
 	HorizontalPodAutoscalers []string
+	Ingresses                []string
 	Jobs                     []string
 	PersistentVolumeClaims   []string
 	PersistentVolumes        []string
