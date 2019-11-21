@@ -6,6 +6,7 @@ type Kube struct {
 	DeploymentNames              []string
 	HorizontalPodAutoscalerNames []string
 	IngressNames                 []string
+	NetworkPolicyNames           []string
 	JobNames                     []string
 	PersistentVolumeClaimNames   []string
 	PersistentVolumeNames        []string
@@ -23,6 +24,7 @@ type Kube struct {
 	Deployments              []string
 	HorizontalPodAutoscalers []string
 	Ingresses                []string
+	NetworkPolicies          []string
 	Jobs                     []string
 	PersistentVolumeClaims   []string
 	PersistentVolumes        []string

@@ -33,6 +33,9 @@ func (k *Kube) GetKubeObjects(client *kubernetes.Clientset) error {
 	if err := k.getIngresses(client); err != nil {
 		return err
 	}
+	if err := k.getNetworkPolicies(client); err != nil {
+		return err
+	}
 	if err := k.getJobs(client); err != nil {
 		return err
 	}
@@ -204,6 +207,33 @@ func (k *Kube) getIngresses(client *kubernetes.Clientset) error {
 		k.Ingresses = append(k.Ingresses, yml)
 	}
 	k.NumTemplates += len(k.Ingresses)
+	return nil
+}
+
+func (k *Kube) getNetworkPolicies(client *kubernetes.Clientset) error {
+	for _, name := range k.NetworkPolicyNames {
+		netpol, err := client.NetworkingV1().NetworkPolicies(k.Namespace).Get(name, metav1.GetOptions{})
+		if err != nil {
+			return err
+		}
+		ref, err := apiref.GetReference(api.Scheme, netpol)
+		if err != nil {
+			return err
+		}
+		if netpol.Kind == "" {
+			netpol.Kind = ref.Kind
+		}
+		if netpol.APIVersion == "" {
+			netpol.APIVersion = makeAPIVersion(netpol.GetSelfLink())
+		}
+		cleanupMeta(&netpol.ObjectMeta)
+		yml, err := cleanupAndMarshalToYaml(netpol)
+		if err != nil {
+			return err
+		}
+		k.NetworkPolicies = append(k.NetworkPolicies, yml)
+	}
+	k.NumTemplates += len(k.NetworkPolicies)
 	return nil
 }
 
