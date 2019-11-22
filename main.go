@@ -185,6 +185,8 @@ func main() {
 			name = "horizontalpodautoscalers"
 		case "ing":
 			name = "ingresses"
+		case "netpol":
+			name = "networkpolicies"
 		case "pvc":
 			name = "persistentvolumeclaims"
 		case "pv":
