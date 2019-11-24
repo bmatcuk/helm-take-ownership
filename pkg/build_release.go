@@ -46,6 +46,10 @@ func (k *Kube) buildTemplates() ([]*chart.Template, string) {
 		manifest += addChartTemplate(templates, "ingress", name, k.Ingresses[i], idx)
 		idx++
 	}
+	for i, name := range k.NetworkPolicyNames {
+		manifest += addChartTemplate(templates, "networkpolicy", name, k.NetworkPolicies[i], idx)
+		idx++
+	}
 	for i, name := range k.JobNames {
 		manifest += addChartTemplate(templates, "job", name, k.Jobs[i], idx)
 		idx++
