@@ -1,5 +1,5 @@
 # [helm-take-ownership]
-Transfer ownership of existing [kubernetes] release to [helm].
+Transfer ownership of existing [kubernetes] release to [helm] v2.
 
 Let's say you have an existing [kubernetes] deployment that you want to migrate
 to [helm]. [helm] currently doesn't have any functionality to migrate owneship
@@ -78,15 +78,19 @@ I think, in the future, it might make sense to have some sort of "edit" option
 that would allow a user to edit the Chart before it is installed to take care
 of these very specific use cases.
 
+## What about helm v3?
+I don't use [kubernetes] or [helm] much in my daily life anymore, so this
+project is semi-sunset. [helm] v2 is still supported and can be run alongside
+v3. You could migrate your existing deployments to [helm] v2, and then migrate
+from v2 to v3.
+
 ## Development
-[helm-take-ownership] is written in [go] and uses [glide] to manage
-dependencies.
+[helm-take-ownership] is written in [go]
 
 ```bash
-# Grab latest code and install dependencies:
+# Grab latest code
 git clone git@github.com:bmatcuk/helm-take-ownership.git
 cd helm-take-ownership
-make dependencies
 
 # Install plugin locally
 # helm plugin remove own
@@ -103,9 +107,8 @@ If you'd like to contribute to [helm-take-ownership], submit a pull request.
 - [ ] command line switch to set the [helm] namespace (defaults to kube-system)
 - [ ] allow a user to edit the Chart before installing it
 
-[helm-take-ownership]: https://github.com/bmatcuk/helm-take-ownership
-[kubernetes]: https://kubernetes.io/
-[helm]: https://helm.sh/
 [chartify]: https://github.com/appscode/chartify
 [go]: https://golang.org/
-[glide]: https://glide.sh/
+[helm-take-ownership]: https://github.com/bmatcuk/helm-take-ownership
+[helm]: https://helm.sh/
+[kubernetes]: https://kubernetes.io/
